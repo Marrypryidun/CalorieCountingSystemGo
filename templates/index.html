@@ -1,0 +1,26 @@
+<!--index.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+<form class="form" action="/" method="POST">
+
+  <div class="form-group">
+    <label for="product">Введіть імя продукту для пошуку</label>
+    <input type="text" class="form-control" id="product" name="product" placeholder="Ім'я продукту">
+  </div>
+  <button type="submit" class="btn btn-primary">Знайти</button>
+</form>
+  <!--Loop over the `payload` variable, which is the list of articles-->
+  {{range .payload }}
+    <!--Create the link for the article based on its ID-->
+    <a href="/product/view/{{.ID}}">
+      <!--Display the title of the article -->
+      <h2>{{.Name}}</h2>
+    </a>
+    <!--Display the content of the article-->
+    <p>{{.Calories}}</p>
+  {{end}}
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}
