@@ -1,29 +1,36 @@
 <!--menu.html-->
-
-<nav class="navbar navbar-default">
-  <div class="container">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/">
-        Home
-      </a>
-    </div>
-    <ul class="nav navbar-nav">
+<header class="mb-5">
+<nav class=" navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div>
+          <a href="/" class="navbar-brand">
+              <img src="https://www.flaticon.com/svg/static/icons/svg/472/472499.svg" width="30"  height="30" alt="logo">
+          </a>
+          <a class="navbar-brand" href="/">
+              Avocado
+          </a>
+      </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
       {{ if .is_logged_in }}
         <!--Display this link only when the user is logged in-->
-        <li><a href="/article/create">Create Article</a></li>
+        <li class="nav-item" ><a class="nav-link" href="/u/profile">Профіль</a></li>
       {{end}} 
       {{ if not .is_logged_in }}
         <!--Display this link only when the user is not logged in-->
-        <li><a href="/u/register">Register</a></li>
+        <li class="nav-item"><a class="nav-link" href="/u/register">Реєстрація</a></li>
       {{end}} 
       {{ if not .is_logged_in }}
         <!--Display this link only when the user is not logged in-->
-        <li><a href="/u/login">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="/u/login">Авторизація</a></li>
       {{end}} 
       {{ if .is_logged_in }}
         <!--Display this link only when the user is logged in-->
-        <li><a href="/u/logout">Logout</a></li>
+        <li class="nav-item"><a class="nav-link" href="/u/logout">Вийти</a></li>
       {{end}}
     </ul>
-  </div>
+    </div>
 </nav>
+</header>

@@ -2,10 +2,18 @@
 
 <!--Embed the header.html template at this location-->
 {{ template "header.html" .}}
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
 
-<div>
-  You have successfully logged in.
+  <main role="main" class="inner cover">
+    <h1 class="cover-heading text-light">Ви успіщно авторизовані!</h1>
+    <p class="lead text-light"> Виберіть, що ви хочете зробити</p>
+    <p class="lead">
+      <a href="/" class=" but1 btn btn-success my-2">Головна</a>
+      <a href="/u/profile" class=" but2 btn btn-warning my-2">Профіль</a>
+    </p>
+  </main>
 </div>
+
     
 <!--Embed the footer.html template at this location-->
 {{ template "footer.html" .}}

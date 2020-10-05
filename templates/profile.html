@@ -1,0 +1,166 @@
+<!--create-article.html-->
+
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
+
+<body class="bg-light">
+<div class="container">
+  <div class="py-5 text-center">
+    <img class="d-block mx-auto mb-4" src="https://www.flaticon.com/svg/static/icons/svg/472/472499.svg" alt="" width="72" height="72">
+    <h2 class="text-light">Профіль</h2>
+    <p class="lead text-light">Нижче наведено інформацію про ваш профіль і розрахована кількість калорій, яка необхідна саме вам. Ви можете змінити інформацію, після чого кількість калорій оновиться.</div>
+  <p class="bg-warning" id="error">
+  </p>
+  <div class="row">
+    <div class="col-md-4 order-md-2 mb-4">
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">Необхідна кількість калорій для вас складає:</h6>
+          </div>
+          <h2 class="text-muted calories"></h2>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3 text-light">Ваші дані:</h4>
+      <div class="needs-validation text-light" novalidate="">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">Ім'я</label>
+            <input type="text" class="form-control" id="name" placeholder="" value="{{.payload.Name}}" required="">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="sex">Стать</label>
+            <select class="custom-select d-block w-100" id="select" required="">
+              <option value="">Choose...</option>
+              <option value="чоловіча">чоловіча</option>
+              <option value="жіноча">жіноча</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="mb-3">
+          <label for="login">Логін</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">@</span>
+            </div>
+            <input type="text" class="form-control" id="login" value="{{.payload.Login}}" placeholder="Username" required="">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password">Пароль</label>
+          <input type="password" name="password" class="form-control" value="{{.payload.Password}}" id="password" placeholder="Пароль">
+        </div>
+
+        <div class="row">
+        <div class="col-md-3">
+          <label for="age">Вік</label>
+          <input type="number" name="age" class="form-control" value="{{.payload.Age}}" id="age" placeholder="Вік">
+        </div>
+
+        <div class="col-md-3">
+          <label for="height">Ріст</label>
+          <input type="number" name="height" class="form-control" value="{{.payload.Height}}" id="height" placeholder="Ріст">
+        </div>
+          <div class="md-3 mb-3">
+            <label for="weight">Вага</label>
+            <input type="number" name="weight" class="form-control" value="{{.payload.Weight}}" id="weight" placeholder="Вага">
+          </div>
+        </div>
+
+        <hr class="mb-4">
+        <p>
+          <button  class="but1 btn btn-success my-2">Зберегти дані</button>
+          <button  class="but2 btn btn-warning my-2">Скасувати зміни</button>
+        </p>
+        <!--<button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+
+
+<script>
+  var person = {{.payload}}
+          function calculate() {
+            res = document.querySelector('.calories');
+            select.value ={{.payload.Sex}}
+            var calories
+            if (person.Sex == "жіноча") {
+              calories = 655.1 + (9.6 * +person.Weight) + (1.85 * +person.Height) - (4.68 * +person.Age)
+
+            } else if (person.Sex == "чоловіча") {
+              calories = 66.47 + (13.75 * +person.Weight) + (5.0 * +person.Height) - (6.74 * +person.Age)
+            } else {
+              calories = 655.1 + (9.6 * +person.Weight) + (1.85 * +person.Height) - (5 * person.Age)
+            }
+            res.textContent = calories.toFixed(3)
+          }
+          calculate()
+  //alert(person.Age + " + "+ person.Weight)
+  var but2 = document.querySelector(".but2")
+  but2.onclick = function() {
+
+    document.getElementById("name").value =person.Name
+    select.value=person.Sex
+    document.getElementById("password").value =person.Password
+    document.getElementById("age").value =person.Age
+    document.getElementById("height").value=person.Height
+    document.getElementById("weight").value=person.Weight
+
+
+
+  }
+</script>
+<script>
+  $("document").ready(() => {
+
+    let btn1 = $(".but1");
+
+    btn1.click(() => {
+
+      var name = $("#name").val();
+      var login =$("#login").val();
+      var password = $("#password").val();
+      var sex =$("#select").val();
+      var age =$("#age").val();
+      var weight  =$("#weight").val();
+      var height  =$("#height").val();
+
+      person.Name=name
+      person.Login=login
+      person.Password=password
+      person.Sex=sex
+      person.Age=age
+      person.Weight=weight
+      person.Height=height
+      calculate()
+
+      $.post("/u/profile", {
+        name: name,
+        password: password,
+        login: login,
+        sex: sex,
+        age: age,
+        weight: weight,
+        height: height,
+
+      }, function(result){
+          $("#error").text(result.message);
+          setTimeout(() => $("#error").text(""), 1500);
+      });
+    });
+  });
+</script>
+
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}

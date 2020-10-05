@@ -1,0 +1,35 @@
+<!--article.html-->
+
+
+{{ template "header.html" .}}
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1>{{.payload.Name}}</h1>
+        <p class="calories"  hidden="true" >{{.payload.Calories}}</p>
+        <p class="lead text-muted"> Введіть кількість спрожитого продукту в грамах, щоб розрахувати калорії:</p>
+        <input type="number" class="form-control"  placeholder="Кількість продукту в гр">
+        <p>
+            <a href="#" class=" but1 btn btn-success my-2">Розрахувати</a>
+            <a href="#" class=" but2 btn btn-warning my-2">Обчислити калорії у 100гр</a>
+        </p>
+        <p class="result text-muted text-warning"></p>
+    </div>
+</section>
+
+<script>
+    let data = document.querySelector('.calories')
+        number = document.querySelector('.form-control')
+        but1 = document.querySelector('.but1'),
+        but2 = document.querySelector('.but2'),
+        res1 = document.querySelector('.result');
+    but1.onclick = function() {
+        res1.textContent = "Кількість калорій в "+ +number.value +" гр. продукту: " + (+data.textContent* +number.value/100);
+
+    }
+    but2.onclick = function() {
+        res1.textContent = "Кількість калорій в 100 гр. продукту: " + data.textContent;
+    }
+</script>
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}
