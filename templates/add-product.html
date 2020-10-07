@@ -1,0 +1,51 @@
+{{ template "header.html" .}}
+
+<body class="bg-light">
+<div class="container">
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="https://www.flaticon.com/svg/static/icons/svg/472/472499.svg" alt="" width="72" height="72">
+        <h2 class="text-light">Додати свій продукт чи страву</h2>
+        <p class="lead text-light">Для створення страви чи продукту введіть назву та кількість калорій </div>
+    <p class="bg-warning" id="error">
+    </p>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="firstName">Ім'я продукту</label>
+            <input type="text" class="form-control" id="productName" placeholder="" value="" required="">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="lastName">Кількість калорій в 100 гр. продукту чи стави </label>
+            <input type="number" class="form-control" id="productCalories" placeholder="" value="" required="">
+        </div>
+    </div>
+    <button  class="saveDataButton btn btn-success my-2">Додати</button>
+</div>
+
+<script>
+    $("document").ready(() => {
+
+        let btn = $(".saveDataButton");
+
+        btn.click(() => {
+
+            var productName = $("#productName").val();
+            var calories =$("#productCalories").val();
+
+            $.post("/product/createProduct", {
+                productName: productName,
+                productCalories: calories,
+            }, function(result){
+                $("#error").text(result.message);
+                setTimeout(() => $("#error").text(""), 3000);
+            });
+        });
+    });
+</script>
+
+</body>
+
+
+
+
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}

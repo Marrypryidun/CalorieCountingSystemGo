@@ -34,7 +34,64 @@ func initializeRoutes() {
 	productRoutes := router.Group("/product")
 	{
 		productRoutes.GET("/view/:product_id", getProduct)
+		productRoutes.GET("/createProduct",ensureLoggedIn(),showAddProductPage)
+		productRoutes.POST("/createProduct",ensureLoggedIn(),AddProductPage)
 	}
+}
+func AddProductPage(c *gin.Context)  {
+
+	productName := c.PostForm("productName")
+	productCalories,err:=strconv.ParseFloat(c.PostForm("productCalories"),3)
+	is:=isNotExistProduct(productName)
+	if err != nil || is!=true {
+		c.JSON(200,gin.H{
+			"message":"Продукт або страва з таким іменем уже існує",
+		})
+		panic(err)
+	}else{
+		AddProduct(productName,productCalories)
+		c.JSON(200,gin.H{
+			"message":"Успішно додано",
+		})
+	}
+}
+func AddProduct(productName string,productCalories float64)  {
+	session, err := mgo.Dial("mongodb://127.0.0.1")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	productCollection := session.DB("CalorieCountingSystem").C("Products")
+	p:=&product{
+		ID: bson.NewObjectId(),
+		Name: productName,
+		Calories: productCalories,
+	}
+	productsList=append(productsList, *p)
+	err = productCollection.Insert(p)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+func isNotExistProduct(productName string) bool {
+	session, err := mgo.Dial("mongodb://127.0.0.1")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	var products=[]product{}
+	productCollection := session.DB("CalorieCountingSystem").C("Products")
+	productCollection.Find(bson.M{"name": productName}).All(&products)
+	if(len(products)>0){
+		return false
+	}
+	return true
+
+}
+func showAddProductPage(c *gin.Context)  {
+	render(c, gin.H{
+		"title": "AddProduct",
+	}, "add-product.html")
 }
 func showIndexPage(c *gin.Context) {
 	products := getAllProducts()
@@ -107,7 +164,7 @@ func changeData(c *gin.Context) {
 	height,err:=strconv.ParseFloat(c.PostForm("height"),3)
 	weight,err:=strconv.ParseFloat(c.PostForm("weight"),3)
 	age,err:=strconv.ParseInt(c.PostForm("age"),10,64)
-	isOk:=findUser(login,password,name,sex,height,weight,age)
+	isOk:=updateUser(login,password,name,sex,height,weight,age)
 	if err != nil ||isOk!=true {
 		c.JSON(200,gin.H{
 			"message":"Дані не змінено.",
@@ -118,7 +175,7 @@ func changeData(c *gin.Context) {
 			"message":"Дані успішно змінено.",
 		})
 	}
-	fmt.Println(login,password,name,sex,height,weight,age)
+	//fmt.Println(login,password,name,sex,height,weight,age)
 
 
 
@@ -310,7 +367,7 @@ func isUserValid(login, password string) bool {
 	return false
 
 }
-func findUser(login, password,name,sex string,weight,height float64,age int64) bool {
+func updateUser(login, password,name,sex string,weight,height float64,age int64) bool {
 	session, err := mgo.Dial("mongodb://127.0.0.1")
 	if err != nil {
 		panic(err)
